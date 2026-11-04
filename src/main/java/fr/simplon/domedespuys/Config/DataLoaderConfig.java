@@ -2,6 +2,7 @@ package fr.simplon.domedespuys.Config;
 
 import com.github.javafaker.Faker;
 import com.github.slugify.Slugify;
+import fr.simplon.domedespuys.Entity.OrderProduct;
 import fr.simplon.domedespuys.Entity.Purchase;
 import fr.simplon.domedespuys.Entity.EnumPurchaseStatus;
 import fr.simplon.domedespuys.Entity.Image;
@@ -9,6 +10,7 @@ import fr.simplon.domedespuys.Entity.Product;
 import fr.simplon.domedespuys.Entity.Address;
 import fr.simplon.domedespuys.Entity.Brand;
 import fr.simplon.domedespuys.Entity.User;
+import fr.simplon.domedespuys.Repository.OrderProductRepository;
 import fr.simplon.domedespuys.Repository.PurchaseRepository;
 import fr.simplon.domedespuys.Repository.ImageRepository;
 import fr.simplon.domedespuys.Repository.ProductRepository;
@@ -33,16 +35,19 @@ public class DataLoaderConfig implements CommandLineRunner {
     private ProductRepository productRepository;
     private ImageRepository imageRepository;
     private PurchaseRepository purchaseRepository;
+    private OrderProductRepository orderProductRepository;
 
     public DataLoaderConfig(UserRepository userRepository, BrandRepository brandRepository,
                             AddressRepository addressRepository, ProductRepository productRepository,
-                            ImageRepository imageRepository, PurchaseRepository purchaseRepository) {
+                            ImageRepository imageRepository, PurchaseRepository purchaseRepository,
+                            OrderProductRepository orderProductRepository) {
         this.userRepository = userRepository;
         this.brandRepository = brandRepository;
         this.addressRepository = addressRepository;
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
         this.purchaseRepository = purchaseRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class DataLoaderConfig implements CommandLineRunner {
         createProducts();
         createImages();
         createPurchases();
+        createOrderProducts();
     }
 
     private void createUsers() {
@@ -219,6 +225,31 @@ public class DataLoaderConfig implements CommandLineRunner {
                 purchase.setCreatedAt(createdAt);
 
                 purchaseRepository.save(purchase);
+            }
+        }
+    }
+
+    private void createOrderProducts() {
+        if (orderProductRepository.count() == 0) {
+            Faker faker = new Faker(Locale.of("fr"));
+            List<Purchase> purchases = purchaseRepository.findAll();
+            List<Product> products = productRepository.findAll();
+
+            for (Purchase purchase : purchases) {
+                int nbLines = faker.number().numberBetween(1, 6);
+
+                for (int i = 0; i < nbLines; i++) {
+                    OrderProduct orderProduct = new OrderProduct();
+                    orderProduct.setPurchase(purchase);
+
+                    Product randomProduct = products.get(faker.number().numberBetween(0, products.size()));
+                    orderProduct.setProduct(randomProduct);
+
+                    orderProduct.setQuantity(faker.number().numberBetween(1, 4));
+                    orderProduct.setPrice(randomProduct.getPrice().intValue());
+
+                    orderProductRepository.save(orderProduct);
+                }
             }
         }
     }
