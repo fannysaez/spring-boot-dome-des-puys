@@ -2,15 +2,18 @@ package fr.simplon.domedespuys.Config;
 
 import com.github.javafaker.Faker;
 import com.github.slugify.Slugify;
+import fr.simplon.domedespuys.Entity.Product;
 import fr.simplon.domedespuys.Entity.Address;
 import fr.simplon.domedespuys.Entity.Brand;
 import fr.simplon.domedespuys.Entity.User;
+import fr.simplon.domedespuys.Repository.ProductRepository;
 import fr.simplon.domedespuys.Repository.AddressRepository;
 import fr.simplon.domedespuys.Repository.BrandRepository;
 import fr.simplon.domedespuys.Repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -22,11 +25,14 @@ public class DataLoaderConfig implements CommandLineRunner {
     private UserRepository userRepository;
     private BrandRepository brandRepository;
     private AddressRepository addressRepository;
+    private ProductRepository productRepository;
 
-    public DataLoaderConfig(UserRepository userRepository, BrandRepository brandRepository, AddressRepository addressRepository) {
+    public DataLoaderConfig(UserRepository userRepository, BrandRepository brandRepository,
+                            AddressRepository addressRepository, ProductRepository productRepository) {
         this.userRepository = userRepository;
         this.brandRepository = brandRepository;
         this.addressRepository = addressRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -34,6 +40,7 @@ public class DataLoaderConfig implements CommandLineRunner {
         createUsers();
         createBrands();
         createAddresses();
+        createProducts();
     }
 
     private void createUsers() {
@@ -112,6 +119,37 @@ public class DataLoaderConfig implements CommandLineRunner {
                 address.setCreatedAt(createdAt);
 
                 addressRepository.save(address);
+            }
+        }
+    }
+
+    private void createProducts() {
+        if (productRepository.count() == 0) {
+            Faker faker = new Faker(Locale.of("fr"));
+            Slugify slugify = Slugify.builder().build();
+            List<Brand> brands = brandRepository.findAll();
+
+            for (int i = 0; i < 180; i++) {
+                Product product = new Product();
+                String label = faker.commerce().productName();
+                product.setLabel(label);
+                product.setSlug(slugify.slugify(label + "-" + i));
+
+                if (hasProbability(3, 4)) {
+                    product.setDescription(faker.lorem().paragraph());
+                }
+
+                BigDecimal price = new BigDecimal(faker.commerce().price());
+                product.setPrice(price);
+
+                Brand randomBrand = brands.get(faker.number().numberBetween(0, brands.size()));
+                product.setBrand(randomBrand);
+
+                LocalDateTime createdAt = new java.sql.Date(faker.date().birthday(0, 5).getTime())
+                        .toLocalDate().atTime(0, 0);
+                product.setCreatedAt(createdAt);
+
+                productRepository.save(product);
             }
         }
     }
