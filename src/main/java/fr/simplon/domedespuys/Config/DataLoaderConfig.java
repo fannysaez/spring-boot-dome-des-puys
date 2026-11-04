@@ -1,7 +1,10 @@
 package fr.simplon.domedespuys.Config;
 
 import com.github.javafaker.Faker;
+import com.github.slugify.Slugify;
+import fr.simplon.domedespuys.Entity.Brand;
 import fr.simplon.domedespuys.Entity.User;
+import fr.simplon.domedespuys.Repository.BrandRepository;
 import fr.simplon.domedespuys.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -16,10 +19,12 @@ import java.util.Random;
 public class DataLoaderConfig implements CommandLineRunner {
 
     private UserRepository userRepository;
+    private BrandRepository brandRepository;
 
     @Override
     public void run(String... args) {
         createUsers();
+        createBrands();
     }
 
     private void createUsers() {
@@ -51,8 +56,27 @@ public class DataLoaderConfig implements CommandLineRunner {
         }
     }
 
+    private void createBrands() {
+        if (brandRepository.count() == 0) {
+            Faker faker = new Faker(Locale.of("fr"));
+            Slugify slugify = Slugify.builder().build();
+
+            for (int i = 0; i < 50; i++) {
+                Brand brand = new Brand();
+                String label = faker.company().name();
+                brand.setLabel(label);
+                brand.setSlug(slugify.slugify(label));
+                if (hasProbability(1, 2)) {
+                    brand.setLogo("https://picsum.photos/seed/" + slugify.slugify(label) + "/200");
+                }
+                brandRepository.save(brand);
+            }
+        }
+    }
+
     private boolean hasProbability(int expected, int max) {
         Random random = new Random();
         return random.nextInt(max) < expected;
     }
+
 }
