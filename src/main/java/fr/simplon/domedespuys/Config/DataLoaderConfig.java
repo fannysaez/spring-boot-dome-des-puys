@@ -2,11 +2,14 @@ package fr.simplon.domedespuys.Config;
 
 import com.github.javafaker.Faker;
 import com.github.slugify.Slugify;
+import fr.simplon.domedespuys.Entity.Purchase;
+import fr.simplon.domedespuys.Entity.EnumPurchaseStatus;
 import fr.simplon.domedespuys.Entity.Image;
 import fr.simplon.domedespuys.Entity.Product;
 import fr.simplon.domedespuys.Entity.Address;
 import fr.simplon.domedespuys.Entity.Brand;
 import fr.simplon.domedespuys.Entity.User;
+import fr.simplon.domedespuys.Repository.PurchaseRepository;
 import fr.simplon.domedespuys.Repository.ImageRepository;
 import fr.simplon.domedespuys.Repository.ProductRepository;
 import fr.simplon.domedespuys.Repository.AddressRepository;
@@ -29,15 +32,17 @@ public class DataLoaderConfig implements CommandLineRunner {
     private AddressRepository addressRepository;
     private ProductRepository productRepository;
     private ImageRepository imageRepository;
+    private PurchaseRepository purchaseRepository;
 
     public DataLoaderConfig(UserRepository userRepository, BrandRepository brandRepository,
                             AddressRepository addressRepository, ProductRepository productRepository,
-                            ImageRepository imageRepository) {
+                            ImageRepository imageRepository, PurchaseRepository purchaseRepository) {
         this.userRepository = userRepository;
         this.brandRepository = brandRepository;
         this.addressRepository = addressRepository;
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
+        this.purchaseRepository = purchaseRepository;
     }
 
     @Override
@@ -47,6 +52,7 @@ public class DataLoaderConfig implements CommandLineRunner {
         createAddresses();
         createProducts();
         createImages();
+        createPurchases();
     }
 
     private void createUsers() {
@@ -177,6 +183,42 @@ public class DataLoaderConfig implements CommandLineRunner {
 
                     imageRepository.save(image);
                 }
+            }
+        }
+    }
+
+    private void createPurchases() {
+        if (purchaseRepository.count() == 0) {
+            Faker faker = new Faker(Locale.of("fr"));
+            List<User> users = userRepository.findAll();
+            List<Address> allAddresses = addressRepository.findAll();
+            EnumPurchaseStatus[] statuses = EnumPurchaseStatus.values();
+
+            for (int i = 0; i < 170; i++) {
+                Purchase purchase = new Purchase();
+                purchase.setNumber("CMD-2026-" + String.format("%06d", i + 1));
+                purchase.setStatus(statuses[faker.number().numberBetween(0, statuses.length)]);
+
+                User randomUser = users.get(faker.number().numberBetween(0, users.size()));
+                purchase.setUser(randomUser);
+
+                List<Address> userAddresses = allAddresses.stream()
+                        .filter(a -> a.getUser().getId().equals(randomUser.getId()))
+                        .toList();
+
+                Address randomAddress;
+                if (!userAddresses.isEmpty()) {
+                    randomAddress = userAddresses.get(faker.number().numberBetween(0, userAddresses.size()));
+                } else {
+                    randomAddress = allAddresses.get(faker.number().numberBetween(0, allAddresses.size()));
+                }
+                purchase.setAddress(randomAddress);
+
+                LocalDateTime createdAt = new java.sql.Date(faker.date().birthday(0, 5).getTime())
+                        .toLocalDate().atTime(0, 0);
+                purchase.setCreatedAt(createdAt);
+
+                purchaseRepository.save(purchase);
             }
         }
     }
