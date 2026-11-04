@@ -2,10 +2,12 @@ package fr.simplon.domedespuys.Config;
 
 import com.github.javafaker.Faker;
 import com.github.slugify.Slugify;
+import fr.simplon.domedespuys.Entity.Image;
 import fr.simplon.domedespuys.Entity.Product;
 import fr.simplon.domedespuys.Entity.Address;
 import fr.simplon.domedespuys.Entity.Brand;
 import fr.simplon.domedespuys.Entity.User;
+import fr.simplon.domedespuys.Repository.ImageRepository;
 import fr.simplon.domedespuys.Repository.ProductRepository;
 import fr.simplon.domedespuys.Repository.AddressRepository;
 import fr.simplon.domedespuys.Repository.BrandRepository;
@@ -26,13 +28,16 @@ public class DataLoaderConfig implements CommandLineRunner {
     private BrandRepository brandRepository;
     private AddressRepository addressRepository;
     private ProductRepository productRepository;
+    private ImageRepository imageRepository;
 
     public DataLoaderConfig(UserRepository userRepository, BrandRepository brandRepository,
-                            AddressRepository addressRepository, ProductRepository productRepository) {
+                            AddressRepository addressRepository, ProductRepository productRepository,
+                            ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.brandRepository = brandRepository;
         this.addressRepository = addressRepository;
         this.productRepository = productRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
@@ -41,6 +46,7 @@ public class DataLoaderConfig implements CommandLineRunner {
         createBrands();
         createAddresses();
         createProducts();
+        createImages();
     }
 
     private void createUsers() {
@@ -150,6 +156,27 @@ public class DataLoaderConfig implements CommandLineRunner {
                 product.setCreatedAt(createdAt);
 
                 productRepository.save(product);
+            }
+        }
+    }
+
+    private void createImages() {
+        if (imageRepository.count() == 0) {
+            Faker faker = new Faker(Locale.of("fr"));
+            List<Product> products = productRepository.findAll();
+
+            for (Product product : products) {
+                int nbImages = faker.number().numberBetween(1, 4);
+
+                for (int i = 0; i < nbImages; i++) {
+                    Image image = new Image();
+                    image.setPath("https://picsum.photos/seed/" + product.getSlug() + "-" + i + "/400");
+                    image.setExtension("jpg");
+                    image.setDefault(i == 0);
+                    image.setProduct(product);
+
+                    imageRepository.save(image);
+                }
             }
         }
     }
