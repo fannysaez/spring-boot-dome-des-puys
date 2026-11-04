@@ -34,6 +34,10 @@ public class Purchase {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
+
     @OneToMany(mappedBy = "purchase")
     private List<OrderProduct> orderProducts = new ArrayList<>();
 }
