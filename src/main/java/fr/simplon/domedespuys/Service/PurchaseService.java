@@ -27,6 +27,12 @@ public class PurchaseService {
         return purchaseDTOs;
     }
 
+    public PurchaseDTO getPurchaseById(Long id) {
+        Purchase purchase = purchaseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable avec l'id " + id));
+        return convertToDTO(purchase);
+    }
+
     private PurchaseDTO convertToDTO(Purchase purchase) {
         PurchaseDTO dto = new PurchaseDTO();
         dto.setId(purchase.getId());

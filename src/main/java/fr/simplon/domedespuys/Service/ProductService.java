@@ -27,6 +27,12 @@ public class ProductService {
         return productDTOs;
     }
 
+    public ProductDTO getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit introuvable avec l'id " + id));
+        return convertToDTO(product);
+    }
+
     private ProductDTO convertToDTO(Product product) {
         ProductDTO dto = new ProductDTO();
         dto.setId(product.getId());

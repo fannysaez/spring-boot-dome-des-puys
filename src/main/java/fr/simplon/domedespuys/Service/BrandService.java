@@ -27,6 +27,12 @@ public class BrandService {
         return brandDTOs;
     }
 
+    public BrandDTO getBrandById(Long id) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Marque introuvable avec l'id " + id));
+        return convertToDTO(brand);
+    }
+
     private BrandDTO convertToDTO(Brand brand) {
         BrandDTO dto = new BrandDTO();
         dto.setId(brand.getId());
