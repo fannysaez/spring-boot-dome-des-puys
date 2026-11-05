@@ -27,6 +27,12 @@ public class OrderProductService {
         return orderProductDTOs;
     }
 
+    public OrderProductDTO getOrderProductById(Long id) {
+        OrderProduct orderProduct = orderProductRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ligne de commande introuvable avec l'id " + id));
+        return convertToDTO(orderProduct);
+    }
+
     private OrderProductDTO convertToDTO(OrderProduct orderProduct) {
         OrderProductDTO dto = new OrderProductDTO();
         dto.setId(orderProduct.getId());

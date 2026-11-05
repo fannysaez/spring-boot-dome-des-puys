@@ -26,6 +26,11 @@ public class ImageService {
 
         return imageDTOs;
     }
+    public ImageDTO getImageById(Long id) {
+        Image image = imageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Image introuvable avec l'id " + id));
+        return convertToDTO(image);
+    }
 
     private ImageDTO convertToDTO(Image image) {
         ImageDTO dto = new ImageDTO();

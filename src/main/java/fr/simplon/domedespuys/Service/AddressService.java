@@ -26,6 +26,12 @@ public class AddressService {
 
         return addressDTOs;
     }
+    public AddressDTO getAddressById(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Adresse introuvable avec l'id " + id));
+        return convertToDTO(address);
+    }
+
 
     private AddressDTO convertToDTO(Address address) {
         AddressDTO dto = new AddressDTO();
