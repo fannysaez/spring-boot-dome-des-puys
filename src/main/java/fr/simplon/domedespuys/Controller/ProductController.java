@@ -1,7 +1,9 @@
 package fr.simplon.domedespuys.Controller;
 
-import fr.simplon.domedespuys.DTO.ProductDTO;
-import fr.simplon.domedespuys.Service.ProductService;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.simplon.domedespuys.Entity.Product;
+import fr.simplon.domedespuys.Repository.ProductRepository;
+import fr.simplon.domedespuys.Views.ProductView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,22 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private ProductService productService;
+    private ProductRepository productRepository;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @GetMapping
-    public List<ProductDTO> getAllProducts() {
-        return productService.getAllProducts();
+    @JsonView(ProductView.ProductListView.class)
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ProductDTO getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    @JsonView(ProductView.ProductDetailView.class)
+    public Product getProductById(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit introuvable avec l'id " + id));
     }
 }

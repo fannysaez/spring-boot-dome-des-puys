@@ -1,7 +1,9 @@
 package fr.simplon.domedespuys.Controller;
 
-import fr.simplon.domedespuys.DTO.ImageDTO;
-import fr.simplon.domedespuys.Service.ImageService;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.simplon.domedespuys.Entity.Image;
+import fr.simplon.domedespuys.Repository.ImageRepository;
+import fr.simplon.domedespuys.Views.ImageView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,22 @@ import java.util.List;
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private ImageService imageService;
+    private ImageRepository imageRepository;
 
-    public ImageController(ImageService imageService) {
-        this.imageService = imageService;
+    public ImageController(ImageRepository imageRepository) {
+        this.imageRepository = imageRepository;
     }
 
     @GetMapping
-    public List<ImageDTO> getAllImages() {
-        return imageService.getAllImages();
+    @JsonView(ImageView.ImageListView.class)
+    public List<Image> getAllImages() {
+        return imageRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ImageDTO getImageById(@PathVariable Long id) {
-        return imageService.getImageById(id);
+    @JsonView(ImageView.ImageDetailView.class)
+    public Image getImageById(@PathVariable Long id) {
+        return imageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Image introuvable avec l'id " + id));
     }
 }

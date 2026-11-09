@@ -1,7 +1,9 @@
 package fr.simplon.domedespuys.Controller;
 
-import fr.simplon.domedespuys.DTO.OrderProductDTO;
-import fr.simplon.domedespuys.Service.OrderProductService;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.simplon.domedespuys.Entity.OrderProduct;
+import fr.simplon.domedespuys.Repository.OrderProductRepository;
+import fr.simplon.domedespuys.Views.OrderProductView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,22 @@ import java.util.List;
 @RequestMapping("/api/order-products")
 public class OrderProductController {
 
-    private OrderProductService orderProductService;
+    private OrderProductRepository orderProductRepository;
 
-    public OrderProductController(OrderProductService orderProductService) {
-        this.orderProductService = orderProductService;
+    public OrderProductController(OrderProductRepository orderProductRepository) {
+        this.orderProductRepository = orderProductRepository;
     }
 
     @GetMapping
-    public List<OrderProductDTO> getAllOrderProducts() {
-        return orderProductService.getAllOrderProducts();
+    @JsonView(OrderProductView.OrderProductListView.class)
+    public List<OrderProduct> getAllOrderProducts() {
+        return orderProductRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public OrderProductDTO getOrderProductById(@PathVariable Long id) {
-        return orderProductService.getOrderProductById(id);
+    @JsonView(OrderProductView.OrderProductDetailView.class)
+    public OrderProduct getOrderProductById(@PathVariable Long id) {
+        return orderProductRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ligne de commande introuvable avec l'id " + id));
     }
 }

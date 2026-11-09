@@ -1,7 +1,9 @@
 package fr.simplon.domedespuys.Controller;
 
-import fr.simplon.domedespuys.DTO.PurchaseDTO;
-import fr.simplon.domedespuys.Service.PurchaseService;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.simplon.domedespuys.Entity.Purchase;
+import fr.simplon.domedespuys.Repository.PurchaseRepository;
+import fr.simplon.domedespuys.Views.PurchaseView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,22 @@ import java.util.List;
 @RequestMapping("/api/purchases")
 public class PurchaseController {
 
-    private PurchaseService purchaseService;
+    private PurchaseRepository purchaseRepository;
 
-    public PurchaseController(PurchaseService purchaseService) {
-        this.purchaseService = purchaseService;
+    public PurchaseController(PurchaseRepository purchaseRepository) {
+        this.purchaseRepository = purchaseRepository;
     }
 
     @GetMapping
-    public List<PurchaseDTO> getAllPurchases() {
-        return purchaseService.getAllPurchases();
+    @JsonView(PurchaseView.PurchaseListView.class)
+    public List<Purchase> getAllPurchases() {
+        return purchaseRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public PurchaseDTO getPurchaseById(@PathVariable Long id) {
-        return purchaseService.getPurchaseById(id);
+    @JsonView(PurchaseView.PurchaseDetailView.class)
+    public Purchase getPurchaseById(@PathVariable Long id) {
+        return purchaseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable avec l'id " + id));
     }
 }

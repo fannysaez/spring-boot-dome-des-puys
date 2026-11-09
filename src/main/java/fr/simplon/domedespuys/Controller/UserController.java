@@ -1,7 +1,9 @@
 package fr.simplon.domedespuys.Controller;
 
-import fr.simplon.domedespuys.DTO.UserDTO;
-import fr.simplon.domedespuys.Service.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.simplon.domedespuys.Entity.User;
+import fr.simplon.domedespuys.Repository.UserRepository;
+import fr.simplon.domedespuys.Views.UserView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,22 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private UserService userService;
+    private UserRepository userRepository;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return userService.getAllUsers();
+    @JsonView(UserView.UserListView.class)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @JsonView(UserView.UserDetailView.class)
+    public User getUserById(@PathVariable Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id " + id));
     }
 }

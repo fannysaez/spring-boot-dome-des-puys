@@ -1,7 +1,9 @@
 package fr.simplon.domedespuys.Controller;
 
-import fr.simplon.domedespuys.DTO.AddressDTO;
-import fr.simplon.domedespuys.Service.AddressService;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.simplon.domedespuys.Entity.Address;
+import fr.simplon.domedespuys.Repository.AddressRepository;
+import fr.simplon.domedespuys.Views.AddressView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +15,22 @@ import java.util.List;
 @RequestMapping("/api/addresses")
 public class AddressController {
 
-    private AddressService addressService;
+    private AddressRepository addressRepository;
 
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
+    public AddressController(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
     }
 
     @GetMapping
-    public List<AddressDTO> getAllAddresses() {
-        return addressService.getAllAddresses();
+    @JsonView(AddressView.AddressListView.class)
+    public List<Address> getAllAddresses() {
+        return addressRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public AddressDTO getAddressById(@PathVariable Long id) {
-        return addressService.getAddressById(id);
+    @JsonView(AddressView.AddressDetailView.class)
+    public Address getAddressById(@PathVariable Long id) {
+        return addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Adresse introuvable avec l'id " + id));
     }
 }
