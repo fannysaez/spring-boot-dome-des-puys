@@ -3,23 +3,23 @@ package fr.simplon.domedespuys.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import fr.simplon.domedespuys.Entity.Address;
 import fr.simplon.domedespuys.Repository.AddressRepository;
+import fr.simplon.domedespuys.Service.Interfaces.IAddressService;
 import fr.simplon.domedespuys.Views.AddressView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fr.simplon.domedespuys.dto.AddressDTO;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/addresses")
 public class AddressController {
 
     private AddressRepository addressRepository;
+    private IAddressService addressService;
 
-    public AddressController(AddressRepository addressRepository) {
+    public AddressController(AddressRepository addressRepository, IAddressService addressService) {
         this.addressRepository = addressRepository;
+        this.addressService = addressService;
     }
 
     @GetMapping
@@ -30,7 +30,24 @@ public class AddressController {
 
     @GetMapping("/{id}")
     @JsonView(AddressView.AddressDetailView.class)
-    public Optional<Address> getAddressById(@PathVariable Long id) {
-        return addressRepository.findById(id);
+    public Address getAddressById(@PathVariable String id) {
+        return addressService.getById(id);
+    }
+
+    @PostMapping
+    @JsonView(AddressView.AddressDetailView.class)
+    public Address createAddress(@RequestBody AddressDTO dto) {
+        return addressService.create(dto);
+    }
+
+    @PutMapping("/{id}")
+    @JsonView(AddressView.AddressDetailView.class)
+    public Address updateAddress(@PathVariable String id, @RequestBody AddressDTO dto) {
+        return addressService.update(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteAddress(@PathVariable String id) {
+        return addressService.delete(id);
     }
 }
