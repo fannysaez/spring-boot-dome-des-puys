@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fr.simplon.domedespuys.Entity.Purchase;
 import fr.simplon.domedespuys.Service.Interfaces.IPurchaseService;
 import fr.simplon.domedespuys.Views.PurchaseView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fr.simplon.domedespuys.dto.PurchasePostDTO;
+import fr.simplon.domedespuys.dto.PurchasePutDTO;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +30,17 @@ public class PurchaseController {
     @JsonView(PurchaseView.PurchaseDetailView.class)
     public Purchase getPurchaseById(@PathVariable String id) {
         return purchaseService.getById(id);
+    }
+
+    @PostMapping
+    @JsonView(PurchaseView.PurchaseDetailView.class)
+    public Purchase createPurchase(@RequestBody PurchasePostDTO dto) {
+        return purchaseService.create(dto);
+    }
+
+    @PutMapping("/{id}")
+    @JsonView(PurchaseView.PurchaseDetailView.class)
+    public Purchase updatePurchase(@PathVariable String id, @RequestBody PurchasePutDTO dto) {
+        return purchaseService.update(id, dto);
     }
 }
