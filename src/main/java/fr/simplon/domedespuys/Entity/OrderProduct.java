@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
@@ -22,9 +24,9 @@ public class OrderProduct {
     @JsonView(OrderProductView.Quantity.class)
     private int quantity;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     @JsonView(OrderProductView.Price.class)
-    private int price;
+    private BigDecimal price;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "purchase_id", nullable = false)

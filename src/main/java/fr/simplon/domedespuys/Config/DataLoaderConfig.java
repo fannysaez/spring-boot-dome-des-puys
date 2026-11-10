@@ -246,7 +246,7 @@ public class DataLoaderConfig implements CommandLineRunner {
                     orderProduct.setProduct(randomProduct);
 
                     orderProduct.setQuantity(faker.number().numberBetween(1, 4));
-                    orderProduct.setPrice(randomProduct.getPrice().intValue());
+                    orderProduct.setPrice(randomProduct.getPrice());
 
                     orderProductRepository.save(orderProduct);
                 }

@@ -3,6 +3,7 @@ package fr.simplon.domedespuys.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import fr.simplon.domedespuys.Entity.User;
 import fr.simplon.domedespuys.Repository.UserRepository;
+import fr.simplon.domedespuys.Service.Interfaces.IUserService;
 import fr.simplon.domedespuys.Views.UserView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,16 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private UserRepository userRepository;
+    private IUserService userService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, IUserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -30,7 +32,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @JsonView(UserView.UserDetailView.class)
-    public Optional<User> getUserById(@PathVariable Long id) {
-        return userRepository.findById(id);
+    public User getUserById(@PathVariable String id) {
+        return userService.getById(id);
     }
 }
