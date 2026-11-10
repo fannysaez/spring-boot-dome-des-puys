@@ -3,11 +3,9 @@ package fr.simplon.domedespuys.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import fr.simplon.domedespuys.Entity.Image;
 import fr.simplon.domedespuys.Repository.ImageRepository;
+import fr.simplon.domedespuys.Service.Interfaces.IImageService;
 import fr.simplon.domedespuys.Views.ImageView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +15,11 @@ import java.util.Optional;
 public class ImageController {
 
     private ImageRepository imageRepository;
+    private IImageService imageService;
 
-    public ImageController(ImageRepository imageRepository) {
+    public ImageController(ImageRepository imageRepository, IImageService imageService) {
         this.imageRepository = imageRepository;
+        this.imageService = imageService;
     }
 
     @GetMapping
@@ -32,5 +32,10 @@ public class ImageController {
     @JsonView(ImageView.ImageDetailView.class)
     public Optional<Image> getImageById(@PathVariable Long id) {
         return imageRepository.findById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteImage(@PathVariable String id) {
+        return imageService.delete(id);
     }
 }

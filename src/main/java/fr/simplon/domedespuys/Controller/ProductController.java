@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fr.simplon.domedespuys.Entity.Product;
 import fr.simplon.domedespuys.Service.Interfaces.IProductService;
 import fr.simplon.domedespuys.Views.ProductView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fr.simplon.domedespuys.dto.ProductPostDTO;
+import fr.simplon.domedespuys.dto.ProductPutDTO;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +30,17 @@ public class ProductController {
     @JsonView(ProductView.ProductDetailView.class)
     public Product getProductById(@PathVariable String id) {
         return productService.getById(id);
+    }
+
+    @PostMapping
+    @JsonView(ProductView.ProductDetailView.class)
+    public Product createProduct(@RequestBody ProductPostDTO dto) {
+        return productService.create(dto);
+    }
+
+    @PutMapping("/{id}")
+    @JsonView(ProductView.ProductDetailView.class)
+    public Product updateProduct(@PathVariable String id, @RequestBody ProductPutDTO dto) {
+        return productService.update(id, dto);
     }
 }
