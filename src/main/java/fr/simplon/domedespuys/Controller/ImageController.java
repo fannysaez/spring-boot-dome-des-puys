@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/images")
@@ -29,8 +30,7 @@ public class ImageController {
 
     @GetMapping("/{id}")
     @JsonView(ImageView.ImageDetailView.class)
-    public Image getImageById(@PathVariable Long id) {
-        return imageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Image introuvable avec l'id " + id));
+    public Optional<Image> getImageById(@PathVariable Long id) {
+        return imageRepository.findById(id);
     }
 }

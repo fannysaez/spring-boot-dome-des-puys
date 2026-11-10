@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -29,8 +30,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @JsonView(ProductView.ProductDetailView.class)
-    public Product getProductById(@PathVariable Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produit introuvable avec l'id " + id));
+    public Optional<Product> getProductById(@PathVariable Long id) {
+        return productRepository.findById(id);
     }
 }

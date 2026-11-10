@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/brands")
@@ -29,8 +30,7 @@ public class BrandController {
 
     @GetMapping("/{id}")
     @JsonView(BrandView.BrandDetailView.class)
-    public Brand getBrandById(@PathVariable Long id) {
-        return brandRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marque introuvable avec l'id " + id));
+    public Optional<Brand> getBrandById(@PathVariable Long id) {
+        return brandRepository.findById(id);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/order-products")
@@ -29,8 +30,7 @@ public class OrderProductController {
 
     @GetMapping("/{id}")
     @JsonView(OrderProductView.OrderProductDetailView.class)
-    public OrderProduct getOrderProductById(@PathVariable Long id) {
-        return orderProductRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ligne de commande introuvable avec l'id " + id));
+    public Optional<OrderProduct> getOrderProductById(@PathVariable Long id) {
+        return orderProductRepository.findById(id);
     }
 }

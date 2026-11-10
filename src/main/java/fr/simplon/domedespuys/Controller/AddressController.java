@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/addresses")
@@ -29,8 +30,7 @@ public class AddressController {
 
     @GetMapping("/{id}")
     @JsonView(AddressView.AddressDetailView.class)
-    public Address getAddressById(@PathVariable Long id) {
-        return addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adresse introuvable avec l'id " + id));
+    public Optional<Address> getAddressById(@PathVariable Long id) {
+        return addressRepository.findById(id);
     }
 }

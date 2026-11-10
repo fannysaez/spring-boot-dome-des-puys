@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,8 +30,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @JsonView(UserView.UserDetailView.class)
-    public User getUserById(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id " + id));
+    public Optional<User> getUserById(@PathVariable Long id) {
+        return userRepository.findById(id);
     }
 }
