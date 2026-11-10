@@ -8,5 +8,5 @@ public class ProductPostDTO {
     public String description;
     public BigDecimal price;
     public String brand;
-    public List<String> images;
+    public List<ImageDTO> images;
 }
