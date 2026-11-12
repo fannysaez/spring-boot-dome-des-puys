@@ -2,35 +2,49 @@ package fr.simplon.domedespuys.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fr.simplon.domedespuys.Entity.Brand;
-import fr.simplon.domedespuys.Repository.BrandRepository;
+import fr.simplon.domedespuys.Service.Interfaces.IBrandService;
 import fr.simplon.domedespuys.Views.BrandView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fr.simplon.domedespuys.dto.BrandDTO;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/brands")
 public class BrandController {
 
-    private BrandRepository brandRepository;
+    private IBrandService brandService;
 
-    public BrandController(BrandRepository brandRepository) {
-        this.brandRepository = brandRepository;
+    public BrandController(IBrandService brandService) {
+        this.brandService = brandService;
     }
 
     @GetMapping
     @JsonView(BrandView.BrandListView.class)
     public List<Brand> getAllBrands() {
-        return brandRepository.findAll();
+        return brandService.getCollection();
     }
 
     @GetMapping("/{id}")
     @JsonView(BrandView.BrandDetailView.class)
-    public Optional<Brand> getBrandById(@PathVariable Long id) {
-        return brandRepository.findById(id);
+    public Brand getBrandById(@PathVariable String id) {
+        return brandService.getById(id);
+    }
+
+    @PostMapping
+    @JsonView(BrandView.BrandDetailView.class)
+    public Brand createBrand(@RequestBody BrandDTO dto) {
+        return brandService.create(dto);
+    }
+
+    @PutMapping("/{id}")
+    @JsonView(BrandView.BrandDetailView.class)
+    public Brand updateBrand(@PathVariable String id, @RequestBody BrandDTO dto) {
+        return brandService.update(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteBrand(@PathVariable String id) {
+        return brandService.delete(id);
     }
 }
