@@ -188,6 +188,9 @@ Documentation interactive de l'API disponible sur :
 |---|---|
 | GET | /api/brands |
 | GET | /api/brands/{id} |
+| POST | /api/brands |
+| PUT | /api/brands/{id} |
+| DELETE | /api/brands/{id} |
 
 ### Order products
 | Méthode | Route |
