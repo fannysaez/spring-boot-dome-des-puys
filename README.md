@@ -59,6 +59,8 @@ Un Spring Boot est plus verbeux qu'un projet Symfony, mais les rôles sont équi
 
 - **`pom.xml`** : fichier de configuration Maven (équivalent de `composer.json` en PHP). Liste les dépendances du projet (Spring Boot, JPA, MariaDB, Lombok...) et les infos du projet (nom, version, Java utilisé).
 
+- **`<dependencies>`** : balise du `pom.xml` qui liste les librairies externes utilisées par le projet (une par balise `<dependency>`), équivalent du bloc `require` dans un `composer.json`. Maven télécharge et installe automatiquement chaque dépendance déclarée ici.
+
 - **`DomedespuysApplication.java`** : le point d'entrée de l'application (la méthode `main`). C'est ce fichier qui démarre le serveur Spring Boot, un peu comme `index.php` démarre une app PHP.
 
 - **`application.properties`** : fichier de configuration de l'application (connexion à la base de données, port du serveur, etc.), équivalent du `.env` en Symfony.
