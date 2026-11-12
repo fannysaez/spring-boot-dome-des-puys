@@ -2,7 +2,7 @@
 
 # Le Dôme des Puys
 
-API REST sécurisée pour une marketplace, développée dans le cadre de ma formation RSFP (Région Auvergne-Rhône-Alpes).
+API REST sécurisée pour une marketplace, développée dans le cadre de ma formation CDA.
 
 ## Description
 
