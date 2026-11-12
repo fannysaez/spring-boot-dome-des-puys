@@ -1,3 +1,6 @@
+![Le Dôme des Puys](docs/le-dome-des-puys-spring-boot.webp)
+
+
 # Le Dôme des Puys
 
 API REST sécurisée pour une marketplace, développée dans le cadre de ma formation RSFP (Région Auvergne-Rhône-Alpes).
