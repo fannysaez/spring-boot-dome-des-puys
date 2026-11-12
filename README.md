@@ -1,6 +1,5 @@
 ![Le Dôme des Puys](docs/le-dome-des-puys-spring-boot.webp)
 
-
 # Le Dôme des Puys
 
 API REST sécurisée pour une marketplace, développée dans le cadre de ma formation RSFP (Région Auvergne-Rhône-Alpes).
@@ -16,6 +15,7 @@ Le Dôme des Puys est une API permettant de gérer une marketplace : utilisateur
 ```
 spring-boot-dome-des-puys/
 ├── .docker/                     # docker-compose (MariaDB + phpMyAdmin)
+├── docs/                         # Images du README
 ├── src/main/java/fr/simplon/domedespuys/
 │   ├── Config/                  # Fixtures (DataLoaderConfig)
 │   ├── Controller/               # Contrôleurs REST
