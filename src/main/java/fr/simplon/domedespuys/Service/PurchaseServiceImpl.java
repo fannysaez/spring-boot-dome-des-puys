@@ -40,7 +40,8 @@ public class PurchaseServiceImpl implements IPurchaseService {
         purchase.setAddress(address);
 
         int year = LocalDateTime.now().getYear();
-        String number = String.format("PUR-%d-%04d", year, lambdaUser.getId());
+        long count = purchaseRepository.count() + 1;
+        String number = String.format("PUR-%d-%04d", year, count);
         purchase.setNumber(number);
 
         purchase = purchaseRepository.save(purchase);

@@ -6,6 +6,8 @@ import fr.simplon.domedespuys.Service.Interfaces.IProductService;
 import fr.simplon.domedespuys.Views.ProductView;
 import fr.simplon.domedespuys.dto.ProductPostDTO;
 import fr.simplon.domedespuys.dto.ProductPutDTO;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,14 +35,15 @@ public class ProductController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(ProductView.ProductDetailView.class)
-    public Product createProduct(@RequestBody ProductPostDTO dto) {
+    public Product createProduct(@Valid @RequestBody ProductPostDTO dto) {
         return productService.create(dto);
     }
 
     @PutMapping("/{id}")
     @JsonView(ProductView.ProductDetailView.class)
-    public Product updateProduct(@PathVariable String id, @RequestBody ProductPutDTO dto) {
+    public Product updateProduct(@PathVariable String id, @Valid @RequestBody ProductPutDTO dto) {
         return productService.update(id, dto);
     }
 }
