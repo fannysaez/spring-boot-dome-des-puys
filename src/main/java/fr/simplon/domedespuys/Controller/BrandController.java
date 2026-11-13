@@ -5,6 +5,8 @@ import fr.simplon.domedespuys.Entity.Brand;
 import fr.simplon.domedespuys.Service.Interfaces.IBrandService;
 import fr.simplon.domedespuys.Views.BrandView;
 import fr.simplon.domedespuys.dto.BrandDTO;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +34,14 @@ public class BrandController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(BrandView.BrandDetailView.class)
-    public Brand createBrand(@RequestBody BrandDTO dto) {
+    public Brand createBrand(@Valid @RequestBody BrandDTO dto) {
         return brandService.create(dto);
     }
-
     @PutMapping("/{id}")
     @JsonView(BrandView.BrandDetailView.class)
-    public Brand updateBrand(@PathVariable String id, @RequestBody BrandDTO dto) {
+    public Brand updateBrand(@PathVariable String id, @Valid @RequestBody BrandDTO dto) {
         return brandService.update(id, dto);
     }
 
