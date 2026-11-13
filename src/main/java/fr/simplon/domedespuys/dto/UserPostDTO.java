@@ -1,5 +1,6 @@
 package fr.simplon.domedespuys.dto;
 
+import fr.simplon.domedespuys.Validation.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
@@ -8,6 +9,7 @@ public class UserPostDTO {
 
     @NotBlank(message = "L'email est obligatoire")
     @Email(message = "L'email doit être valide")
+    @UniqueEmail
     public String email;
 
     @NotBlank(message = "Le mot de passe est obligatoire")

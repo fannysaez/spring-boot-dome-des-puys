@@ -39,6 +39,7 @@ public class BrandController {
     public Brand createBrand(@Valid @RequestBody BrandDTO dto) {
         return brandService.create(dto);
     }
+
     @PutMapping("/{id}")
     @JsonView(BrandView.BrandDetailView.class)
     public Brand updateBrand(@PathVariable String id, @Valid @RequestBody BrandDTO dto) {

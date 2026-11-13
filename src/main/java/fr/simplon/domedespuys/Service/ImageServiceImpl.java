@@ -17,10 +17,10 @@ public class ImageServiceImpl implements IImageService {
     @Override
     public Image create(ImageDTO dto, Product product) {
         Image image = new Image();
-        image.setPath(dto.path);
+        image.setPath(dto.url);
         image.setDefault(dto.isDefault);
 
-        String extension = dto.path.substring(dto.path.lastIndexOf('.') + 1);
+        String extension = dto.url.substring(dto.url.lastIndexOf('.') + 1);
         image.setExtension(extension);
 
         image.setProduct(product);

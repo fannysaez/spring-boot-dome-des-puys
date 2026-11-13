@@ -1,5 +1,6 @@
 package fr.simplon.domedespuys.Service;
 
+import fr.simplon.domedespuys.Exception.InvalidAddressException;
 import fr.simplon.domedespuys.dto.PurchaseProductDTO;
 import fr.simplon.domedespuys.dto.PurchasePostDTO;
 import fr.simplon.domedespuys.dto.PurchasePutDTO;
@@ -30,7 +31,8 @@ public class PurchaseServiceImpl implements IPurchaseService {
 
     @Override
     public Purchase create(PurchasePostDTO dto) {
-        Address address = addressRepository.findById(dto.addressId).orElse(null);
+        Address address = addressRepository.findById(dto.addressId)
+                .orElseThrow(InvalidAddressException::new);
         User lambdaUser = userRepository.findAll().get(0);
 
         Purchase purchase = new Purchase();

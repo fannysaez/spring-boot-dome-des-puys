@@ -11,4 +11,6 @@ public class ImageDTO {
 
     @Length(max = 150, message = "Le texte alternatif ne peut pas faire plus de 150 caractères")
     public String alt;
+
+    public boolean isDefault;
 }
